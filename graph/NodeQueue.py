@@ -2,27 +2,27 @@ from .Node import Node
 
 
 class NodeQueue:
-	"""Очередь узлов."""
+    """Очередь узлов."""
 
-	queue: list[Node]
+    queue: list[Node]
 
-	def __init__(self):
-		self.queue = []
+    def __init__(self):
+        self.queue = []
 
-	def add(self, node: Node):
-		self.queue.append(node)
+    def add(self, node: Node):
+        self.queue.append(node)
 
-	def clear(self):
-		self.queue.clear()
+    def clear(self):
+        self.queue.clear()
 
-	def size(self):
-		return len(self.queue)
+    def size(self):
+        return len(self.queue)
 
-	def is_empty(self):
-		return self.size() == 0
+    def is_empty(self):
+        return self.size() == 0
 
-	def complete(self):
-		self.queue.pop()
+    def complete(self):
+        self.queue.pop()
 
-	def get_last(self):
-		return self.queue[-1]
+    def get_last(self):
+        return self.queue[-1]
