@@ -2,4 +2,5 @@
 
 from .Graph import Graph
 from .NodeFactory import NodeFactory
-from .DefinitionGlobalTheory import DefinitionGlobalTheory
+from .HeuristicDefGT import HeuristicDefGT
+from .IteratorGlobalTheory import IteratorGlobalTheory
