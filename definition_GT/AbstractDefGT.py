@@ -10,7 +10,7 @@ class AbstractDefGT:
     restricted: set[Node]
 
     @abstractmethod
-    def calculate(self) -> list[set[Node]]:
+    def calculate(self):
         pass
 
     def __init__(self, graph: Graph):

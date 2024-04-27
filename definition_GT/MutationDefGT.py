@@ -1,8 +1,7 @@
 from queue import Queue
 
-from graph import Graph
+from graph import Graph, Theory, TheoryException
 from graph.Node import Node
-from validate_theory import validate
 from .AbstractDefGT import AbstractDefGT
 
 
@@ -10,43 +9,28 @@ class MutationDefGT(AbstractDefGT):
 
     MIN_NODE_COUNT = 5
 
-    def __init__(self, graph: Graph, theory: set[Node]):
+    def __init__(self, graph: Graph, theory: Theory):
         super().__init__(graph)
         self.init_theory = theory
 
-    def calculate(self) -> dict[int, set[Node]]:
-        restricted: dict[Node, int] = {}
-        nodes = set(self.graph.nodes.values())
-
-        for node in self.init_theory:
-            for incompatible in node.incompatibles:
-                if restricted.get(incompatible) is None:
-                    restricted[incompatible] = 0
-                restricted[incompatible] += 1
-
+    def calculate(self) -> list[Theory]:
         sorted_nodes = sorted(list(self.init_theory), key=lambda node: node.priority)
-        theories: dict[int, set[Node]] = {}
+        theories: dict[int, Theory] = {}
 
-        pussy_theory = set(self.init_theory.copy())
+        short_theory = self.init_theory.copy()
         connections: set[Node] = set()
         for node in sorted_nodes[: self.MIN_NODE_COUNT]:
-            pussy_theory.remove(node)
+            short_theory.remove(node)
 
-            for node_restricted in restricted:
-                if node_restricted in node.incompatibles:
-                    restricted[node_restricted] -= 1
+            connections |= short_theory.get_ways()
 
-                if restricted[node_restricted] == 0:
-                    connections.add(node_restricted)
-
-            if restricted.get(node) is None:
-                restricted[node] = 0
+            if short_theory.restricted.get(node) is None:
+                short_theory.restricted[node] = 0
                 connections.add(node)
 
-            # print(node, connections, restricted.get(node))
             for connection in connections:
                 restricted_history = set()
-                neighbors = []
+                neighbors: list[Node] = []
                 queue = Queue()
                 queue.put(connection)
                 history = []
@@ -54,16 +38,11 @@ class MutationDefGT(AbstractDefGT):
                 while not queue.empty():
                     inner_node: Node = queue.get()
                     history.append(inner_node)
-                    if restricted.get(inner_node):
+                    if not short_theory.check_way(inner_node):
                         continue
 
-                    _restricted = set(
-                        [node for node, value in restricted.items() if value]
-                    )
                     inner_connections = (
-                        nodes
-                        - pussy_theory
-                        - _restricted
+                        short_theory.get_ways()
                         - set(history)
                         - inner_node.incompatibles
                         - restricted_history
@@ -79,11 +58,10 @@ class MutationDefGT(AbstractDefGT):
                         restricted_history |= inner_node.incompatibles
 
                 for _neighbors in neighbors:
-                    theory = pussy_theory | set(_neighbors)
-                    sum_hash = sum([hash(node) for node in theory])
-                    # print(theory, sum([i.weight for i in theory]))
-                    if theories.get(sum_hash) or not validate(theory):
+                    try:
+                        theory = short_theory | Theory(*_neighbors)
+                    except TheoryException:
                         continue
-                    theories[sum_hash] = theory
+                    theories[theory.unique_hash] = theory
 
-        return theories
+        return list(theories.values())

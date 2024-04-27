@@ -23,7 +23,7 @@ class Node:
         self.incompatibles = set()
 
     def __repr__(self):
-        return f"{self.indx}"
+        return f"TH{self.indx}"
 
     def add_connection(self, node):
         if node in self.connections:

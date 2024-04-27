@@ -1,4 +1,4 @@
-from graph import Graph
+from graph import Graph, Theory
 from .AbstractDefGT import AbstractDefGT
 
 
@@ -13,7 +13,7 @@ class HeuristicDefGT(AbstractDefGT):
         }
         self.restricted = self.last_node.incompatibles.copy()
 
-    def calculate(self):
+    def calculate(self) -> Theory:
         node = self.last_node
 
         priority_node = None
@@ -32,4 +32,4 @@ class HeuristicDefGT(AbstractDefGT):
             self.restricted.update(priority_node.incompatibles)
             priority_node = None
 
-        return self.history
+        return Theory(*self.history)

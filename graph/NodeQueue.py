@@ -21,7 +21,7 @@ class NodeQueue:
     def is_empty(self):
         return self.size() == 0
 
-    def complete(self):
+    def pop(self):
         self.queue.pop()
 
     def get_last(self):
