@@ -7,7 +7,7 @@ from .AbstractDefGT import AbstractDefGT
 
 class MutationDefGT(AbstractDefGT):
 
-    MIN_NODE_COUNT = 5
+    MIN_NODE_COUNT = 10
 
     def __init__(self, graph: Graph, theory: Theory):
         super().__init__(graph)
@@ -16,14 +16,12 @@ class MutationDefGT(AbstractDefGT):
     def calculate(self) -> list[Theory]:
         sorted_nodes = sorted(list(self.init_theory), key=lambda node: node.priority)
         theories: dict[int, Theory] = {}
-
         short_theory = self.init_theory.copy()
         connections: set[Node] = set()
+
         for node in sorted_nodes[: self.MIN_NODE_COUNT]:
             short_theory.remove(node)
-
             connections |= short_theory.get_ways()
-
             if short_theory.restricted.get(node) is None:
                 short_theory.restricted[node] = 0
                 connections.add(node)
@@ -47,7 +45,6 @@ class MutationDefGT(AbstractDefGT):
                         - inner_node.incompatibles
                         - restricted_history
                     )
-
                     if not inner_connections:
                         neighbors.append(history)
                         history.pop()
