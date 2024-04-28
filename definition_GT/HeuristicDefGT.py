@@ -25,17 +25,14 @@ class HeuristicDefGT(AbstractDefGT):
                 if connection in self.history or connection in self.restricted:
                     continue
                 priorities.append(connection)
-                #print(priorities)
-                # if priority_node is None:
-                #     priority_node = connection
-                # elif connection.priority > priority_node.priority:
-                #     priority_node = connection
 
             priorities.sort(key=lambda _node: _node.priority, reverse=True)
             priority_node = priorities[
-                self.priority_index
-                if len(priorities) - 1 >= self.priority_index else
-                -1
+                (
+                    self.priority_index
+                    if len(priorities) - 1 >= self.priority_index
+                    else -1
+                )
             ]
 
             self.history.add(priority_node)
