@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import AbstractSet, Iterable
 
+from .Graph import Graph
 from .Node import Node
 
 
@@ -30,6 +31,7 @@ class TheoryException(Exception):
 
 
 class Theory(set[Node]):
+    """Глобальная гипотеза."""
 
     def __init__(self, *nodes: Node):
         if len(nodes) != 0 and isinstance(nodes[0], Iterable):
@@ -37,7 +39,7 @@ class Theory(set[Node]):
         self.summ_weight = sum([node.weight for node in nodes])
         self.unique_hash = sum([hash(node) for node in nodes])
         is_valid, restricted = self.validate(nodes, True)
-        self.restricted = restricted
+        self.restricted: dict[Node, int] = restricted
         if not is_valid:
             raise TheoryException()
         return super().__init__(nodes)
@@ -55,6 +57,9 @@ class Theory(set[Node]):
             if value == 0:
                 ways.add(node_restricted)
         return ways
+
+    def is_full(self, graph: Graph) -> bool:
+        return not ((set(self.restricted.keys()) | self) - set(graph.nodes.values()))
 
     @staticmethod
     def validate(

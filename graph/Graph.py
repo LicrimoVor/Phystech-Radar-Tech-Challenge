@@ -1,8 +1,11 @@
+from typing import Union
 from .Node import Node
 
 
 class Graph:
     """Граф."""
+
+    priority_node: Union[Node, None]
 
     def __init__(self, nodes: list[Node], connections: dict[int, list[bool]]):
         self.nodes = {node.indx: node for node in nodes}
