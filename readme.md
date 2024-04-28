@@ -1,7 +1,6 @@
 # Команда Бананчики
 
-![[assets/image.png]]
-
+![Screen Shot](assets/image.png)
 
 #### Запуск кода
 1. Устанавливаем [python3.9](https://www.python.org/downloads/release/python-390/)
